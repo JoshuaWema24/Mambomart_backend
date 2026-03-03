@@ -1,47 +1,37 @@
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
-const socketIo = require('socket');
 const http = require('http');
+const express = require('express');
+const mongoose = require('mongoose');
+const { Server } = require('socket.io');
 require('dotenv').config();
 
+const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
 
 // Middleware
 app.use(express.json());
 
-
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => {
-    console.log('✅ MongoDB connected successfully');
-})
-.catch((err) => {
-    console.error('❌ MongoDB connection error:', err);
-});
-
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB error:', err));
 
 // Socket.IO
 io.on('connection', (socket) => {
-    console.log('🔌 New client connected:', socket.id);
+  console.log('🔌 Client connected:', socket.id);
 
-    socket.on('disconnect', () => {
-        console.log('❌ Client disconnected:', socket.id);
-    });
+  socket.on('disconnect', () => {
+    console.log('❌ Client disconnected:', socket.id);
+  });
 });
 
-// =====================
 // Routes
-// =====================
 const productController = require('./controllers/products.controllers');
 app.post('/products', productController.createProduct);
 app.get('/products', productController.getAllProducts);
@@ -56,10 +46,8 @@ app.get('/sales/:id', salesController.getSalesRecordById);
 app.put('/sales/:id', salesController.updateSalesRecord);
 app.delete('/sales/:id', salesController.deleteSalesRecord);
 
-// =====================
-// Start Server
-// =====================
+// Start server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

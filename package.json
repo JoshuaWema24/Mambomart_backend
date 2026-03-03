@@ -1,0 +1,30 @@
+{
+  "name": "mambomart_backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/JoshuaWema24/Mambomart_backend#readme",
+  "bugs": {
+    "url": "https://github.com/JoshuaWema24/Mambomart_backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoshuaWema24/Mambomart_backend.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "https": "^1.0.0",
+    "io": "^1.5.8",
+    "mongoose": "^9.2.3",
+    "socket": "^1.1.65"
+  }
+}

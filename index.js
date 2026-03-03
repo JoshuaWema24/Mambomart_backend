@@ -1,28 +1,47 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const socketIo = require('socket.io');
+const socketIo = require('socket');
 const http = require('http');
+require('dotenv').config();
+
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
 
 // Middleware
 app.use(express.json());
- 
-io.on('connection', (socket) => {
-    console.log('New client connected');
-    socket.on('disconnect', () => {
-        console.log('Client disconnected');
-    }
-);
+
+
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => {
+    console.log('✅ MongoDB connected successfully');
+})
+.catch((err) => {
+    console.error('❌ MongoDB connection error:', err);
 });
 
-// Connect to MongoDB
-//mongoose.connect('mongodb://localhost:27017/minimart', { useNewUrlParser: true, useUnifiedTopology: true })
-   // .then(() => console.log('MongoDB connected'))
-  //  .catch(err => console.log(err));
 
+// Socket.IO
+io.on('connection', (socket) => {
+    console.log('🔌 New client connected:', socket.id);
 
+    socket.on('disconnect', () => {
+        console.log('❌ Client disconnected:', socket.id);
+    });
+});
+
+// =====================
+// Routes
+// =====================
 const productController = require('./controllers/products.controllers');
 app.post('/products', productController.createProduct);
 app.get('/products', productController.getAllProducts);
@@ -37,8 +56,10 @@ app.get('/sales/:id', salesController.getSalesRecordById);
 app.put('/sales/:id', salesController.updateSalesRecord);
 app.delete('/sales/:id', salesController.deleteSalesRecord);
 
-// start the server
+// =====================
+// Start Server
+// =====================
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });

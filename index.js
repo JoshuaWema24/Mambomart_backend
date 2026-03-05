@@ -34,14 +34,14 @@ io.on('connection', (socket) => {
 // Routes
 const productController = require('./controllers/products.controllers');
 app.post('/products', productController.createProduct);
-app.get('/products', productController.getAllProducts);
+app.get('/getProducts', productController.getAllProducts);
 app.get('/products/:id', productController.getProductById);
 app.put('/products/:id', productController.updateProduct);
 app.delete('/products/:id', productController.deleteProduct);
 
 const salesController = require('./controllers/minimartSalescontroller');
 app.post('/sales', salesController.createSalesRecord);
-app.get('/sales', salesController.getAllSalesRecords);
+app.get('/getSales', salesController.getAllSalesRecords);
 app.get('/sales/:id', salesController.getSalesRecordById);
 app.put('/sales/:id', salesController.updateSalesRecord);
 app.delete('/sales/:id', salesController.deleteSalesRecord);

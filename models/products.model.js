@@ -1,15 +1,23 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
-    productName: { type: String, required: true },
-    category: { type: String, required: true },
-    sellingPrice: { type: Number, required: true },
-    unit: { type: String,  default: 'pcs'},
-    suppliersName: { type: String, required: true },
-    barcode: { type: String, required: true },
-    costPrice: { type: Number, required: true },
-    quantity: { type: Number, required: true },
-    dateAdded: { type: Date, default: Date.now }
-});
- module.exports = mongoose.model('Product', productSchema);
+const productSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    sku: { type: String, required: true, unique: true },
+    price: { type: Number, required: true },
+    stock: { type: Number, required: true },
+
+    storeType: {
+      type: String,
+      enum: ["MINIMART", "PHONE_STORE"],
+      required: true,
+    },
+
+    // Dynamic field
+    unit: String,        
+    storage: String,     
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Product", productSchema);

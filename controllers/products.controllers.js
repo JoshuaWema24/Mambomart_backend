@@ -4,23 +4,46 @@ const Product = require('../models/products.model');
 
 // create new product
 exports.createProduct = async(req, res) => {
-    try{
-        const { productName, category, sellingPrice, unit, suppliersName, barcode, costPrice, quantity } = req.body;
-        const newProduct = new Product({
-            productName,
-            category,
-            sellingPrice,
-            unit,
-            suppliersName,
-            barcode,
-            costPrice,
-            quantity
-        });
-        const savedProduct = await newProduct.save();
-        res.status(201).json(savedProduct);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
+    try {
+    const {
+      name,
+      sku,
+      price,
+      stock,
+      storeType,
+      unit,
+      storage,
+    } = req.body;
+
+    if (!name || !sku || !price || !stock || !storeType) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
+
+    const existing = await Product.findOne({ sku });
+    if (existing) {
+      return res.status(409).json({ message: "SKU already exists" });
+    }
+
+    const product = new Product({
+      name,
+      sku,
+      price,
+      stock,
+      storeType,
+      unit: storeType === "MINIMART" ? unit : null,
+      storage: storeType === "PHONE_STORE" ? storage : null,
+    });
+
+    await product.save();
+
+    res.status(201).json({
+      message: "Product added successfully",
+      product,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 }
 
 //get all products

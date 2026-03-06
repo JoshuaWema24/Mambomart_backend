@@ -30,8 +30,8 @@ exports.createProduct = async(req, res) => {
       price,
       stock,
       storeType,
-      unit: storeType === "MINIMART" ? unit : null,
-      storage: storeType === "PHONE_STORE" ? storage : null,
+      unit: storeType === "MINIMART" ? unit : 0,
+      storage: storeType === "PHONE_STORE" ? storage : 0,
     });
 
     await product.save();

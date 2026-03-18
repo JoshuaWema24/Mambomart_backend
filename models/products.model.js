@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema(
   barcode: {
     type: String,
     unique: true,
-    sparse: true   // allows null values but keeps uniqueness
+    sparse: true   
   },
 
   price: {

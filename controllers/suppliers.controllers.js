@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Supplier = require('../models/suppliers.model');
 
 
+
 // create new supplier
 exports.createSupplier = async (req, res) => {
   try {
@@ -26,11 +27,7 @@ exports.createSupplier = async (req, res) => {
     // Send response first
     res.status(201).json({ message: "Supplier created successfully", supplier });
 
-    // Emit socket event AFTER sending response
-    if (io) {
-      io.emit("supplierCreated", supplier);
-    }
-
+   
   } catch (error) {
     // Check if headers already sent to avoid double response
     if (!res.headersSent) {
@@ -80,7 +77,7 @@ exports.updateSupplier = async (req, res) => {
             return res.status(404).json({ message: "Supplier not found" });
         }
         res.json({ message: "Supplier updated successfully", supplier });
-        io.emit("supplierUpdated", supplier);
+        
     } catch (error) {
         res.status(500).json({ message: "Error while updating supplier", error: error.message });
     }
@@ -94,7 +91,7 @@ exports.deleteSupplier = async (req, res) => {
             return res.status(404).json({ message: "Supplier not found" });
         }
         res.json({ message: "Supplier deleted successfully" });
-        io.emit("supplierDeleted", supplier._id);
+        
     } catch (error) {
         res.status(500).json({ message: "Error while deleting supplier", error: error.message });
     }

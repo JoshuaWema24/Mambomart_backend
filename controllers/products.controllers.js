@@ -8,7 +8,6 @@ exports.createProduct = async (req, res) => {
     const {
       name,
       sku,
-      barcode,
       price,
       stock,
       storeType,

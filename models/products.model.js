@@ -14,12 +14,6 @@ const productSchema = new mongoose.Schema(
     trim: true
   },
 
-  barcode: {
-    type: String,
-    unique: true,
-    sparse: true   
-  },
-
   price: {
     type: Number,
     required: true,
@@ -34,7 +28,7 @@ const productSchema = new mongoose.Schema(
 
   storeType: {
     type: String,
-    enum: ["MINIMART", "PHONE_STORE"],
+    enum: ["MINIMART", "PHONE_STORE", "GRILL", "JUICE_SHOP", "KITCHEN", "COFFEE_SHOP"],
     required: true
   },
 

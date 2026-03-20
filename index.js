@@ -52,6 +52,14 @@ const mpesaRoutes = require("./routes/mpesa.routes");
 
 app.use("/api/mpesa", mpesaRoutes);
 
+//suppliers routes
+const suppliersController = require('./controllers/suppliers.controllers');
+app.post('/suppliers', suppliersController.createSupplier);
+app.get('/getSuppliers', suppliersController.getAllSuppliers);
+app.get('/suppliers/:id', suppliersController.getSupplierById);
+app.put('/suppliers/:id', suppliersController.updateSupplier);
+app.delete('/suppliers/:id', suppliersController.deleteSupplier);
+
 // Start server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

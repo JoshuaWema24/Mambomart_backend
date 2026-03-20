@@ -47,7 +47,7 @@ app.get('/sales/:id', salesController.getSalesRecordById);
 app.put('/sales/:id', salesController.updateSalesRecord);
 app.delete('/sales/:id', salesController.deleteSalesRecord);
 
-const mpesaRoutes = require("./routes/mpesaRoutes");
+const mpesaRoutes = require("./routes/mpesa.routes");
 
 
 app.use("/api/mpesa", mpesaRoutes);

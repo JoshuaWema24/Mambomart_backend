@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
+app.use(express.json());
 
 const io = new Server(server, {
   cors: {
@@ -45,6 +46,11 @@ app.get('/getSales', salesController.getAllSalesRecords);
 app.get('/sales/:id', salesController.getSalesRecordById);
 app.put('/sales/:id', salesController.updateSalesRecord);
 app.delete('/sales/:id', salesController.deleteSalesRecord);
+
+const mpesaRoutes = require("./routes/mpesaRoutes");
+
+
+app.use("/api/mpesa", mpesaRoutes);
 
 // Start server
 const PORT = process.env.PORT || 3000;

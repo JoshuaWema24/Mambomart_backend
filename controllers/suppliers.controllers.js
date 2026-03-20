@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Supplier = require('../models/suppliers.model');
 
+
 // create new supplier
 exports.createSupplier = async (req, res) => {
   try {
@@ -22,20 +23,24 @@ exports.createSupplier = async (req, res) => {
 
     await supplier.save();
 
-    // Emit event safely
-    try {
+    // Send response first
+    res.status(201).json({ message: "Supplier created successfully", supplier });
+
+    // Emit socket event AFTER sending response
+    if (io) {
       io.emit("supplierCreated", supplier);
-    } catch (emitError) {
-      console.error("Socket emit error:", emitError);
-      // do NOT send another res here
     }
 
-    // Send response once
-    return res.status(201).json({ message: "Supplier created successfully", supplier });
-
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Error while creating supplier", error: error.message });
+    // Check if headers already sent to avoid double response
+    if (!res.headersSent) {
+      return res.status(500).json({
+        message: "Error while creating supplier",
+        error: error.message,
+      });
+    } else {
+      console.error("Error after response sent:", error);
+    }
   }
 };
 

@@ -3,31 +3,41 @@ const mongoose = require('mongoose');
 const Supplier = require('../models/suppliers.model');
 
 // create new supplier
-exports.createSupplier = async ( req, res)=>
-{
-    try {
-        const { name, companyName, phone, email, productType } = req.body;
+exports.createSupplier = async (req, res) => {
+  try {
+    const { name, companyName, phone, email, productType } = req.body;
 
-        // Validate required fields
-        if (!name || !companyName || !phone || !email || !productType) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
-        const supplier = new Supplier({
-            name,
-            companyName,
-            phone,
-            email,
-            productType
-        });
-
-        await supplier.save();
-        res.status(201).json({ message: "Supplier created successfully", supplier });
-        io.emit("supplierCreated", supplier);
-    } catch (error) {
-        res.status(500).json({ message: "Error while  creating supplier", error: error.message });
-
+    // Validate required fields
+    if (!name || !companyName || !phone || !email || !productType) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
-}
+
+    const supplier = new Supplier({
+      name,
+      companyName,
+      phone,
+      email,
+      productType,
+    });
+
+    await supplier.save();
+
+    // Emit event safely
+    try {
+      io.emit("supplierCreated", supplier);
+    } catch (emitError) {
+      console.error("Socket emit error:", emitError);
+      // do NOT send another res here
+    }
+
+    // Send response once
+    return res.status(201).json({ message: "Supplier created successfully", supplier });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error while creating supplier", error: error.message });
+  }
+};
 
 // get all suppliers
 exports.getAllSuppliers = async (req, res) => {

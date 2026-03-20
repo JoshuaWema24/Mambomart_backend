@@ -13,11 +13,12 @@ exports.createProduct = async (req, res) => {
       storeType,
       unit,
       storage,
+      category,
       lowStockAlert
     } = req.body;
 
     // Validate required fields
-    if (!name || !sku || !price || !stock || !storeType) {
+    if (!name || !sku || !price || !stock || !storeType || !category) {
       return res.status(400).json({
         success: false,
         message: "Missing required fields",
@@ -33,24 +34,16 @@ exports.createProduct = async (req, res) => {
       });
     }
 
-    // Check barcode if provided
-    if (barcode) {
-      const existingBarcode = await Product.findOne({ barcode });
-      if (existingBarcode) {
-        return res.status(409).json({
-          success: false,
-          message: "Barcode already exists",
-        });
-      }
-    }
+    
+   
 
     const product = new Product({
       name,
       sku,
-      barcode,
       price: Number(price),
       stock: Number(stock),
       storeType,
+      category,
       unit: storeType === "MINIMART" ? unit : null,
       storage: storeType === "PHONE_STORE" ? storage : null,
       lowStockAlert: lowStockAlert ? Number(lowStockAlert) : 5,
